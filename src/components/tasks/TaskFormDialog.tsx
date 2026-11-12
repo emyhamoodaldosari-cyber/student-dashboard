@@ -105,11 +105,11 @@ function Label({ children, required }: { children: ReactNode; required?: boolean
   );
 }
 
-function ErrorText({ msg }: { msg?: string }) {
+function ErrorText({ msg }: { msg?: string | undefined }) {
   return msg ? <p className="mt-1.5 text-sm text-destructive">{msg}</p> : null;
 }
 
-function Section({ icon: Icon, title, children, className }: { icon: LucideIcon; title: string; children: ReactNode; className?: string }) {
+function Section({ icon: Icon, title, children, className }: { icon: LucideIcon; title: string; children: ReactNode; className?: string | undefined }) {
   return (
     <section className={cn("rounded-3xl border border-border bg-card/80 px-5 py-4 shadow-card", className)}>
       <div className="mb-3 flex items-center gap-3">

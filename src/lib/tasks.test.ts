@@ -1,8 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { filterTasks, normalizeTask, sampleTasks, type AcademicTask } from "./tasks";
+import { filterTasks, normalizeTask, type AcademicTask } from "./tasks";
 
 const now = new Date("2026-09-10T12:00:00");
-const base: AcademicTask = { ...sampleTasks[0], id: "x", status: "Not started", progress: 0 };
+const base: AcademicTask = {
+  id: "x",
+  title: "Task",
+  description: "",
+  type: "Assignment",
+  priority: "Medium",
+  status: "Not started",
+  dueAt: null,
+  estimatedMinutes: 30,
+  actualMinutes: 0,
+  course: null,
+  progress: 0,
+};
 
 describe("academic task filters", () => {
   it("overdue = past due date and not completed", () => {
