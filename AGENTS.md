@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Dashboard UI lives in `src/components/dashboard/*` with mock content in `src/lib/dashboard-data.ts`; keep sample data out of components so it can later be swapped for real data.
