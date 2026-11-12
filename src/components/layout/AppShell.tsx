@@ -11,14 +11,14 @@ export function AppShell({ children }: { children: ReactNode }) {
       <AppHeader onOpenMenu={() => setMenuOpen(true)} />
 
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-        <SheetContent side="left" className="w-[290px] border-sidebar-border bg-sidebar p-0">
+        <SheetContent side="left" className="w-[290px] overflow-y-auto border-sidebar-border bg-sidebar p-0 scrollbar-sidebar">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <AppSidebar onNavigate={() => setMenuOpen(false)} />
         </SheetContent>
       </Sheet>
 
       <div className="flex">
-        <AppSidebar className="sticky top-[76px] hidden h-[calc(100vh-76px)] w-[275px] shrink-0 overflow-y-auto lg:flex" />
+        <AppSidebar className="sticky top-[76px] hidden h-[calc(100vh-76px)] w-[275px] shrink-0 overflow-y-auto scrollbar-sidebar lg:flex" />
         <main className="min-w-0 flex-1 space-y-5 p-4 md:p-5">{children}</main>
       </div>
     </div>

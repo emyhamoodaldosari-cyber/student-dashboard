@@ -142,6 +142,8 @@
   --sidebar-accent-foreground: oklch(0.97 0.01 292);
   --sidebar-border: oklch(0.42 0.08 285 / 55%);
   --sidebar-ring: oklch(0.62 0.18 287);
+  --sidebar-scroll-thumb: oklch(1 0 0 / 28%);
+  --sidebar-scroll-thumb-hover: oklch(1 0 0 / 55%);
 }
 
 @layer base {
@@ -194,6 +196,33 @@
 
 @utility bg-modal-wave {
   background-image: var(--gradient-modal-wave);
+}
+
+/* Thin, white, overlay-style scrollbar that blends into the navy sidebar. */
+@utility scrollbar-sidebar {
+  scrollbar-gutter: stable;
+
+  /* Chrome/Edge/Safari: custom 6px pill thumb (scrollbar-color would override these) */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: 14px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--sidebar-scroll-thumb);
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--sidebar-scroll-thumb-hover);
+  }
+
+  /* Firefox */
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sidebar-scroll-thumb) transparent;
+  }
 }
 
 @utility bg-hero-fade {
