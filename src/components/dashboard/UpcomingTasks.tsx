@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { upcomingTasks, type Priority } from "@/lib/dashboard-data";
@@ -21,10 +22,10 @@ export function UpcomingTasks() {
           <h2 className="text-2xl font-bold tracking-tight">Upcoming Tasks</h2>
           <p className="text-[17px] text-muted-foreground">What's coming up next</p>
         </div>
-        <button type="button" className="mt-2 inline-flex items-center gap-2 text-[17px] font-bold text-primary hover:underline">
+        <Link to="/academic-tasks" className="mt-2 inline-flex items-center gap-2 text-[17px] font-bold text-primary hover:underline">
           View all
           <ArrowRight className="h-5 w-5" />
-        </button>
+        </Link>
       </div>
 
       <ul className="mt-3 divide-y divide-border">

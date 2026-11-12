@@ -31,3 +31,5 @@ use the editor.
 
 ## Project rules
 - Dashboard UI lives in `src/components/dashboard/*` with mock content in `src/lib/dashboard-data.ts`; keep sample data out of components so it can later be swapped for real data.
+- Pages share the header/side menu via `src/components/layout/AppShell.tsx`; side-menu items get a route only when that page exists (`to` in `navItems`).
+- Academic task rules (filters, status/progress consistency) live in `src/lib/tasks.ts` with tests in `src/lib/tasks.test.ts`; tasks persist in browser localStorage until a backend is added.

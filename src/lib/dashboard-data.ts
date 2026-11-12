@@ -14,12 +14,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type NavItem = { label: string; icon: LucideIcon };
+export type NavItem = { label: string; icon: LucideIcon; to?: "/" | "/academic-tasks" };
 
 export const navItems: NavItem[] = [
-  { label: "Dashboard", icon: LayoutGrid },
+  { label: "Dashboard", icon: LayoutGrid, to: "/" },
   { label: "My Courses", icon: BookOpen },
-  { label: "Academic Tasks", icon: SquareCheckBig },
+  { label: "Academic Tasks", icon: SquareCheckBig, to: "/academic-tasks" },
   { label: "Weekly Planner", icon: CalendarDays },
   { label: "Private Notes", icon: Lock },
   { label: "Learning Paths", icon: Map },

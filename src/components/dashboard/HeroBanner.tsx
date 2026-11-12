@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import hero from "@/assets/hero-lighthouse.jpg";
 import { student } from "@/lib/dashboard-data";
@@ -25,13 +26,13 @@ export function HeroBanner() {
           Track your study progress and stay on top of your academic journey.
         </p>
         <div className="mt-7">
-          <button
-            type="button"
+          <Link
+            to="/academic-tasks"
             className="inline-flex h-12 items-center gap-3 rounded-xl bg-card px-7 text-lg font-bold text-navy shadow-pill transition-transform hover:-translate-y-0.5"
           >
             View tasks
             <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

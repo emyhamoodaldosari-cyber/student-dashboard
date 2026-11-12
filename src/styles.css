@@ -53,6 +53,12 @@
   --color-critical: var(--critical);
   --color-critical-soft: var(--critical-soft);
   --color-notify: var(--notify);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-low: var(--low);
+  --color-low-soft: var(--low-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -105,6 +111,15 @@
   --critical: oklch(0.55 0.22 15);
   --critical-soft: oklch(0.94 0.04 10);
   --notify: oklch(0.63 0.24 22);
+  --info: oklch(0.52 0.2 268);
+  --info-soft: oklch(0.94 0.035 268);
+  --low: oklch(0.45 0.05 280);
+  --low-soft: oklch(0.94 0.012 285);
+  --success: oklch(0.52 0.14 155);
+  --success-soft: oklch(0.94 0.05 155);
+  --gradient-tasks-hero: radial-gradient(60% 120% at 78% 100%, oklch(0.86 0.07 295 / 85%), transparent 60%), linear-gradient(100deg, oklch(0.975 0.01 292), oklch(0.93 0.04 293));
+  --gradient-primary-btn: linear-gradient(135deg, oklch(0.45 0.22 285), oklch(0.56 0.24 290));
+  --gradient-modal-wave: radial-gradient(40% 140% at 85% 100%, oklch(0.85 0.09 295 / 65%), transparent 70%);
 
   --gradient-bar: linear-gradient(180deg, oklch(0.74 0.14 292), oklch(0.82 0.08 295));
   --gradient-bar-peak: linear-gradient(180deg, oklch(0.5 0.23 285), oklch(0.66 0.19 290));
@@ -167,6 +182,18 @@
 
 @utility bg-insight {
   background-image: var(--gradient-insight);
+}
+
+@utility bg-tasks-hero {
+  background-image: var(--gradient-tasks-hero);
+}
+
+@utility bg-primary-btn {
+  background-image: var(--gradient-primary-btn);
+}
+
+@utility bg-modal-wave {
+  background-image: var(--gradient-modal-wave);
 }
 
 @utility bg-hero-fade {

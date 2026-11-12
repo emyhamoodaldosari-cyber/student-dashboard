@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { AppHeader } from "@/components/dashboard/AppHeader";
-import { AppSidebar } from "@/components/dashboard/AppSidebar";
+import { AppShell } from "@/components/layout/AppShell";
 import { HeroBanner } from "@/components/dashboard/HeroBanner";
 import { NextActionCard } from "@/components/dashboard/NextActionCard";
 import { AcademicOverview } from "@/components/dashboard/AcademicOverview";
@@ -24,45 +21,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const [active, setActive] = useState("Dashboard");
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader onOpenMenu={() => setMenuOpen(true)} />
-
-      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-        <SheetContent side="left" className="w-[290px] border-sidebar-border bg-sidebar p-0">
-          <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <AppSidebar
-            active={active}
-            onSelect={(l) => {
-              setActive(l);
-              setMenuOpen(false);
-            }}
-          />
-        </SheetContent>
-      </Sheet>
-
-      <div className="flex">
-        <AppSidebar
-          active={active}
-          onSelect={setActive}
-          className="sticky top-[76px] hidden h-[calc(100vh-76px)] w-[275px] shrink-0 overflow-y-auto lg:flex"
-        />
-
-        <main className="min-w-0 flex-1 space-y-5 p-4 md:p-5">
-          <HeroBanner />
-          <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.47fr_1fr]">
-            <NextActionCard />
-            <AcademicOverview />
-          </div>
-          <div className="grid grid-cols-1 gap-5 xl:grid-cols-[0.92fr_1fr]">
-            <UpcomingTasks />
-            <StudyProgress />
-          </div>
-        </main>
+    <AppShell>
+      <HeroBanner />
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.47fr_1fr]">
+        <NextActionCard />
+        <AcademicOverview />
       </div>
-    </div>
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[0.92fr_1fr]">
+        <UpcomingTasks />
+        <StudyProgress />
+      </div>
+    </AppShell>
   );
 }
