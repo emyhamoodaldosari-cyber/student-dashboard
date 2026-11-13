@@ -11,7 +11,7 @@
 /* Beacon design system — deep navy night + violet lighthouse glow. */
 
 @theme inline {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -121,6 +121,9 @@
   --gradient-primary-btn: linear-gradient(135deg, oklch(0.45 0.22 285), oklch(0.56 0.24 290));
   --gradient-modal-wave: radial-gradient(40% 140% at 85% 100%, oklch(0.85 0.09 295 / 65%), transparent 70%);
 
+  --gradient-search-header: radial-gradient(70% 140% at 85% 0%, oklch(0.45 0.2 290 / 70%), transparent 60%), linear-gradient(120deg, oklch(0.13 0.07 280), oklch(0.22 0.12 283));
+  --gradient-search-glow: radial-gradient(closest-side, oklch(0.88 0.07 292 / 70%), transparent);
+
   --gradient-bar: linear-gradient(180deg, oklch(0.74 0.14 292), oklch(0.82 0.08 295));
   --gradient-bar-peak: linear-gradient(180deg, oklch(0.5 0.23 285), oklch(0.66 0.19 290));
   --gradient-card-wave: radial-gradient(120% 80% at 80% 120%, oklch(0.86 0.08 295 / 70%), transparent 60%);
@@ -153,6 +156,14 @@
 
   html {
     font-family: var(--font-sans);
+  }
+
+  /* Arabic: Plex Arabic first so Latin digits/brand stay consistent; no letter-spacing (breaks joined script). */
+  html[lang="ar"] {
+    font-family: "IBM Plex Sans Arabic", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  }
+  html[lang="ar"] * {
+    letter-spacing: 0 !important;
   }
 
   body {
@@ -223,6 +234,14 @@
     scrollbar-width: thin;
     scrollbar-color: var(--sidebar-scroll-thumb) transparent;
   }
+}
+
+@utility bg-search-header {
+  background-image: var(--gradient-search-header);
+}
+
+@utility bg-search-glow {
+  background-image: var(--gradient-search-glow);
 }
 
 @utility bg-hero-fade {

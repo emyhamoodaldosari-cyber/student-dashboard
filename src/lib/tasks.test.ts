@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterTasks, normalizeTask, type AcademicTask } from "./tasks";
+import { filterTasks, normalizeTask, taskText, type AcademicTask } from "./tasks";
 
 const now = new Date("2026-09-10T12:00:00");
 const base: AcademicTask = {
@@ -50,5 +50,17 @@ describe("normalizeTask", () => {
   });
   it("reaching 100% marks the task completed", () => {
     expect(normalizeTask({ ...base, progress: 100 }).status).toBe("Completed");
+  });
+});
+
+describe("taskText", () => {
+  it("shows Arabic text for an untouched sample task", () => {
+    const t = { ...base, id: "quiz-4", title: "Missed Quiz 4" };
+    expect(taskText(t, "ar").title).toBe("الاختبار القصير 4 الفائت");
+    expect(taskText(t, "en").title).toBe("Missed Quiz 4");
+  });
+  it("keeps the student's own title once a sample task is renamed", () => {
+    const t = { ...base, id: "quiz-4", title: "My quiz" };
+    expect(taskText(t, "ar").title).toBe("My quiz");
   });
 });

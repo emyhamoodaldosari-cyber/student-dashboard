@@ -3,18 +3,23 @@ import { normalizeTask, sampleTasks, type AcademicTask } from "@/lib/tasks";
 
 const STORAGE_KEY = "beacon.academic-tasks.v1";
 
+/** Reads the saved tasks once (e.g. for search) without subscribing to changes. */
+export function loadStoredTasks(): AcademicTask[] {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as AcademicTask[]) : sampleTasks;
+  } catch {
+    return sampleTasks;
+  }
+}
+
 /** Tasks are kept in this browser only (no account/database yet). */
 export function useTasks() {
   const [tasks, setTasks] = useState<AcademicTask[]>(sampleTasks);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setTasks(JSON.parse(raw) as AcademicTask[]);
-    } catch {
-      /* ignore corrupt storage */
-    }
+    setTasks(loadStoredTasks());
     setLoaded(true);
   }, []);
 
@@ -37,5 +42,5 @@ export function useTasks() {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  return { tasks, upsert, update, remove };
+  return { tasks, loaded, upsert, update, remove };
 }

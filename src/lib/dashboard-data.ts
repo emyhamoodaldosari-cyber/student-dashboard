@@ -1,6 +1,5 @@
 import {
   BookOpen,
-  Briefcase,
   CalendarDays,
   FileText,
   FolderKanban,
@@ -13,45 +12,69 @@ import {
   SquareCheckBig,
   type LucideIcon,
 } from "lucide-react";
+import type { MessageKey } from "./i18n-dict";
+import type { Localized } from "./i18n";
 
-export type NavItem = { label: string; icon: LucideIcon; to?: "/" | "/academic-tasks" };
+export type NavItem = { key: MessageKey; icon: LucideIcon; to?: "/" | "/academic-tasks" };
 
 export const navItems: NavItem[] = [
-  { label: "Dashboard", icon: LayoutGrid, to: "/" },
-  { label: "My Courses", icon: BookOpen },
-  { label: "Academic Tasks", icon: SquareCheckBig, to: "/academic-tasks" },
-  { label: "Weekly Planner", icon: CalendarDays },
-  { label: "Private Notes", icon: Lock },
-  { label: "Learning Paths", icon: Map },
-  { label: "Projects", icon: FolderKanban },
-  { label: "Career Journey", icon: GraduationCap },
-  { label: "Portfolio", icon: Rows3 },
-  { label: "CV Builder", icon: FileText },
-  { label: "Settings", icon: Settings },
+  { key: "nav.dashboard", icon: LayoutGrid, to: "/" },
+  { key: "nav.courses", icon: BookOpen },
+  { key: "nav.tasks", icon: SquareCheckBig, to: "/academic-tasks" },
+  { key: "nav.planner", icon: CalendarDays },
+  { key: "nav.notes", icon: Lock },
+  { key: "nav.paths", icon: Map },
+  { key: "nav.projects", icon: FolderKanban },
+  { key: "nav.career", icon: GraduationCap },
+  { key: "nav.portfolio", icon: Rows3 },
+  { key: "nav.cv", icon: FileText },
+  { key: "nav.settings", icon: Settings },
 ];
 
-export const student = { name: "Ghada" };
+export const student = { name: { en: "Ghada", ar: "غادة" } satisfies Localized };
 
 export type Priority = "High" | "Medium" | "Critical";
 
 export type Task = {
   id: string;
-  title: string;
+  title: Localized;
+  /** ISO date */
   due: string;
-  course: string;
+  course: Localized;
   priority: Priority;
 };
 
 export const upcomingTasks: Task[] = [
-  { id: "t1", title: "Revise for Database Systems Quiz", due: "Aug 28, 2026", course: "Database Systems", priority: "High" },
-  { id: "t2", title: "Submit Research Proposal", due: "Aug 30, 2026", course: "Research Methods", priority: "Medium" },
-  { id: "t3", title: "Update Project Documentation", due: "Sep 3, 2026", course: "Capstone Project", priority: "Critical" },
+  {
+    id: "t1",
+    title: { en: "Revise for Database Systems Quiz", ar: "المراجعة لاختبار أنظمة قواعد البيانات" },
+    due: "2026-08-28T09:00:00",
+    course: { en: "Database Systems", ar: "أنظمة قواعد البيانات" },
+    priority: "High",
+  },
+  {
+    id: "t2",
+    title: { en: "Submit Research Proposal", ar: "تسليم مقترح البحث" },
+    due: "2026-08-30T09:00:00",
+    course: { en: "Research Methods", ar: "مناهج البحث" },
+    priority: "Medium",
+  },
+  {
+    id: "t3",
+    title: { en: "Update Project Documentation", ar: "تحديث توثيق المشروع" },
+    due: "2026-09-03T09:00:00",
+    course: { en: "Capstone Project", ar: "مشروع التخرج" },
+    priority: "Critical",
+  },
 ];
 
 export const nextAction = {
-  title: "Finalize Capstone Architecture",
-  description: "This item needs your attention to keep your project on track.",
-  due: "Sep 3, 2026",
+  title: { en: "Finalize Capstone Architecture", ar: "إنهاء بنية مشروع التخرج" } satisfies Localized,
+  description: {
+    en: "This item needs your attention to keep your project on track.",
+    ar: "يحتاج هذا البند إلى اهتمامك لإبقاء مشروعك على المسار الصحيح.",
+  } satisfies Localized,
+  due: "2026-09-03T09:00:00",
   priority: "Critical" as Priority,
 };
 
@@ -65,6 +88,6 @@ export const weeklyStudy = [
   { day: "Fri", hours: 3.0 },
   { day: "Sat", hours: 1.8 },
   { day: "Sun", hours: 1.2 },
-];
+] as const;
 
 export const weeklyChangePercent = 18;

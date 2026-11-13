@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Bell, ChevronDown, Globe, Menu, Search } from "lucide-react";
+import { Bell, Check, ChevronDown, Globe, Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,78 +9,128 @@ import {
 import logo from "@/assets/beacon-logo.png.asset.json";
 import avatar from "@/assets/default-avatar.png.asset.json";
 import { student } from "@/lib/dashboard-data";
+import { useI18n, type Locale } from "@/lib/i18n";
+import { useModKey } from "@/hooks/use-mod-key";
+import { cn } from "@/lib/utils";
 
-const languages = ["English", "العربية"];
+const languages: { id: Locale; label: string }[] = [
+  { id: "en", label: "English" },
+  { id: "ar", label: "العربية" },
+];
 
-export function AppHeader({ onOpenMenu }: { onOpenMenu: () => void }) {
-  const [language, setLanguage] = useState(languages[0]);
+const iconBtn = "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-sidebar-accent";
+
+export function AppHeader({
+  collapsed,
+  onToggleCollapsed,
+  onOpenMenu,
+  onOpenSearch,
+}: {
+  collapsed: boolean;
+  onToggleCollapsed: () => void;
+  onOpenMenu: () => void;
+  onOpenSearch: () => void;
+}) {
+  const { t, l, locale, setLocale } = useI18n();
+  const modKey = useModKey();
+  const current = languages.find((x) => x.id === locale) ?? languages[0];
+  const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
 
   return (
-    <header className="sticky top-0 z-30 flex h-[76px] items-center gap-4 border-b border-navy-border bg-navy-deep px-4 text-navy-foreground lg:px-0">
-      <button
-        type="button"
-        onClick={onOpenMenu}
-        aria-label="Open menu"
-        className="rounded-lg p-2 text-navy-foreground hover:bg-sidebar-accent lg:hidden"
-      >
+    <header className="sticky top-0 z-30 flex h-[76px] items-center gap-1.5 border-b border-navy-border bg-navy-deep px-2 text-navy-foreground sm:gap-3 sm:px-4 lg:px-0">
+      <button type="button" onClick={onOpenMenu} aria-label={t("header.openMenu")} className={cn(iconBtn, "lg:hidden")}>
         <Menu className="h-6 w-6" />
       </button>
 
-      <div className="flex items-center gap-3 lg:w-[275px] lg:pl-10">
-        <img src={logo.url} alt="Beacon logo" width={44} height={44} className="h-11 w-11" />
-        <span className="text-[28px] font-bold tracking-tight">Beacon</span>
+      <div
+        className={cn(
+          "flex min-w-0 items-center gap-3 transition-[width,padding] duration-300 ease-out",
+          collapsed ? "lg:w-[88px] lg:justify-center lg:ps-0" : "lg:w-[275px] lg:ps-10",
+        )}
+      >
+        <img src={logo.url} alt={t("brand")} width={44} height={44} className="h-10 w-10 shrink-0 sm:h-11 sm:w-11" />
+        <span
+          className={cn(
+            "hidden text-2xl font-bold tracking-tight min-[400px]:inline sm:text-[28px]",
+            collapsed && "lg:hidden",
+          )}
+        >
+          {t("brand")}
+        </span>
       </div>
+
+      <button
+        type="button"
+        onClick={onToggleCollapsed}
+        aria-label={collapsed ? t("header.expand") : t("header.collapse")}
+        aria-pressed={collapsed}
+        title={collapsed ? t("header.expand") : t("header.collapse")}
+        className={cn(iconBtn, "hidden border border-navy-border lg:ms-3 lg:flex")}
+      >
+        <ToggleIcon className="h-5 w-5 rtl:-scale-x-100" />
+      </button>
 
       <div className="hidden flex-1 justify-center px-4 md:flex">
-        <label className="flex h-12 w-full max-w-[578px] items-center gap-3 rounded-full border border-navy-border bg-navy px-5 transition-colors focus-within:border-primary-glow">
-          <Search className="h-5 w-5 shrink-0 text-navy-muted" />
-          <input
-            type="search"
-            placeholder="Search Beacon or press ⌘K..."
-            className="w-full bg-transparent text-[17px] text-navy-foreground placeholder:text-navy-muted focus:outline-none"
-          />
-          <kbd className="hidden shrink-0 rounded-md border border-navy-border px-2 py-0.5 text-sm text-navy-muted sm:inline">
-            ⌘ | K
-          </kbd>
-        </label>
-      </div>
-
-      <div className="ml-auto flex items-center gap-3 lg:pr-5">
         <button
           type="button"
-          aria-label="Notifications"
-          className="relative rounded-full p-2 hover:bg-sidebar-accent"
+          onClick={onOpenSearch}
+          className="flex h-12 w-full max-w-[578px] items-center gap-3 rounded-full border border-navy-border bg-navy px-5 text-start transition-colors hover:border-primary-glow focus:outline-none focus-visible:border-primary-glow"
         >
+          <Search className="h-5 w-5 shrink-0 text-navy-muted" />
+          <span className="flex-1 truncate text-[17px] text-navy-muted">
+            {t("header.search")} {modKey}K...
+          </span>
+          <kbd className="hidden shrink-0 rounded-md border border-navy-border px-2 py-0.5 font-sans text-sm text-navy-muted lg:inline" dir="ltr">
+            {modKey} | K
+          </kbd>
+        </button>
+      </div>
+
+      <div className="ms-auto flex items-center gap-1 sm:gap-2 lg:pe-5">
+        <button type="button" onClick={onOpenSearch} aria-label={t("header.searchShort")} className={cn(iconBtn, "md:hidden")}>
+          <Search className="h-5 w-5" />
+        </button>
+
+        <button type="button" aria-label={t("header.notifications")} className={cn(iconBtn, "relative")}>
           <Bell className="h-6 w-6" />
-          <span className="absolute right-2 top-1.5 h-2.5 w-2.5 rounded-full bg-notify ring-2 ring-navy-deep" />
+          <span className="absolute end-2 top-1.5 h-2.5 w-2.5 rounded-full bg-notify ring-2 ring-navy-deep" />
         </button>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex h-12 items-center gap-2.5 rounded-full border border-navy-border pl-1.5 pr-4 text-[17px] hover:bg-sidebar-accent focus:outline-none">
-            <img src={avatar.url} alt="" width={36} height={36} className="h-9 w-9 rounded-full" />
-            <span className="hidden sm:inline">{student.name}</span>
+          <DropdownMenuTrigger className="flex h-11 items-center gap-2 rounded-full border border-navy-border pe-2 ps-1 text-[17px] hover:bg-sidebar-accent focus:outline-none sm:h-12 sm:gap-2.5 sm:pe-4 sm:ps-1.5">
+            <img src={avatar.url} alt="" width={36} height={36} className="h-8 w-8 rounded-full sm:h-9 sm:w-9" />
+            <span className="hidden sm:inline">{l(student.name)}</span>
             <ChevronDown className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem>{t("header.profile")}</DropdownMenuItem>
+            <DropdownMenuItem>{t("header.settings")}</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Sign out</DropdownMenuItem>
+            <DropdownMenuItem>{t("header.signOut")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
         <span className="mx-1 hidden h-8 w-px bg-navy-border sm:block" />
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="hidden h-12 items-center gap-2.5 rounded-full border border-navy-border px-4 text-[17px] hover:bg-sidebar-accent focus:outline-none sm:flex">
+          <DropdownMenuTrigger
+            aria-label={t("header.language")}
+            className="flex h-11 items-center gap-2 rounded-full border border-navy-border px-2.5 text-[17px] hover:bg-sidebar-accent focus:outline-none sm:h-12 sm:gap-2.5 sm:px-4"
+          >
             <Globe className="h-5 w-5" />
-            {language}
-            <ChevronDown className="h-4 w-4" />
+            <span className="hidden sm:inline">{current.label}</span>
+            <ChevronDown className="hidden h-4 w-4 sm:block" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {languages.map((l) => (
-              <DropdownMenuItem key={l} onSelect={() => setLanguage(l)}>
-                {l}
+          <DropdownMenuContent align="end" className="w-40">
+            {languages.map((lang) => (
+              <DropdownMenuItem
+                key={lang.id}
+                onSelect={() => setLocale(lang.id)}
+                lang={lang.id}
+                className="justify-between"
+              >
+                {lang.label}
+                {lang.id === locale && <Check className="h-4 w-4 text-primary" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

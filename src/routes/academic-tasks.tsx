@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SquareCheckBig } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/layout/AppShell";
@@ -8,9 +8,16 @@ import { TaskFilters } from "@/components/tasks/TaskFilters";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { TaskFormDialog } from "@/components/tasks/TaskFormDialog";
 import { useTasks } from "@/components/tasks/useTasks";
-import { filterTasks, type AcademicTask, type TaskFilter } from "@/lib/tasks";
+import { useI18n } from "@/lib/i18n";
+import { filterTasks, taskText, type AcademicTask, type TaskFilter } from "@/lib/tasks";
+
+type TasksSearch = { task?: string; action?: "new" };
 
 export const Route = createFileRoute("/academic-tasks")({
+  validateSearch: (s: Record<string, unknown>): TasksSearch => ({
+    ...(typeof s.task === "string" ? { task: s.task } : {}),
+    ...(s.action === "new" ? { action: "new" as const } : {}),
+  }),
   head: () => ({
     meta: [
       { title: "Academic Tasks — Beacon" },
@@ -25,7 +32,10 @@ export const Route = createFileRoute("/academic-tasks")({
 });
 
 function AcademicTasksPage() {
-  const { tasks, upsert, update, remove } = useTasks();
+  const { t, locale } = useI18n();
+  const { tasks, loaded, upsert, update, remove } = useTasks();
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/academic-tasks" });
   const [filter, setFilter] = useState<TaskFilter>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AcademicTask | null>(null);
@@ -37,10 +47,20 @@ function AcademicTasksPage() {
     setEditing(null);
     setDialogOpen(true);
   };
-  const openEdit = (t: AcademicTask) => {
-    setEditing(t);
+  const openEdit = (task: AcademicTask) => {
+    setEditing(task);
     setDialogOpen(true);
   };
+
+  // Opened from search: ?task=<id> edits that task, ?action=new starts a new one.
+  useEffect(() => {
+    if (!loaded || (!search.task && !search.action)) return;
+    const target = search.task ? tasks.find((x) => x.id === search.task) : undefined;
+    if (target) openEdit(target);
+    else if (search.action === "new") openNew();
+    void navigate({ search: {}, replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, search.task, search.action]);
 
   return (
     <AppShell>
@@ -52,11 +72,11 @@ function AcademicTasksPage() {
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
             <SquareCheckBig className="h-7 w-7" />
           </span>
-          <p className="mt-4 text-xl font-bold">No tasks here</p>
-          <p className="mt-1 text-muted-foreground">Nothing matches this filter right now.</p>
+          <p className="mt-4 text-xl font-bold">{t("tasks.emptyTitle")}</p>
+          <p className="mt-1 text-muted-foreground">{t("tasks.emptyText")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 2xl:grid-cols-3">
           {visible.map((task) => (
             <TaskCard
               key={task.id}
@@ -64,22 +84,28 @@ function AcademicTasksPage() {
               now={now}
               onStart={() => {
                 update(task.id, { status: "In progress" });
-                toast.success(`Started “${task.title}”`);
+                toast.success(t("tasks.toastStarted", { title: taskText(task, locale).title }));
               }}
               onEdit={() => openEdit(task)}
               onOpen={() => openEdit(task)}
               onComplete={() => {
                 update(task.id, { status: "Completed" });
-                toast.success("Task completed — nice work!");
+                toast.success(t("tasks.toastCompleted"));
               }}
               onReopen={() => update(task.id, { status: "In progress", progress: 90 })}
               onDuplicate={() => {
-                upsert({ ...task, id: crypto.randomUUID(), title: `${task.title} (copy)` });
-                toast.success("Task duplicated");
+                const text = taskText(task, locale);
+                upsert({
+                  ...task,
+                  id: crypto.randomUUID(),
+                  title: `${text.title} ${t("tasks.copySuffix")}`,
+                  description: text.description,
+                });
+                toast.success(t("tasks.toastDuplicated"));
               }}
               onDelete={() => {
                 remove(task.id);
-                toast("Task deleted", { action: { label: "Undo", onClick: () => upsert(task) } });
+                toast(t("tasks.toastDeleted"), { action: { label: t("tasks.undo"), onClick: () => upsert(task) } });
               }}
             />
           ))}
@@ -90,9 +116,9 @@ function AcademicTasksPage() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         task={editing}
-        onSubmit={(t) => {
-          upsert(t);
-          toast.success(editing ? "Task updated" : "Task created");
+        onSubmit={(task) => {
+          upsert(task);
+          toast.success(editing ? t("tasks.toastUpdated") : t("tasks.toastCreated"));
         }}
       />
     </AppShell>

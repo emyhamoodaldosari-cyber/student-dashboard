@@ -112,10 +112,41 @@ export function normalizeTask(task: AcademicTask): AcademicTask {
   return { ...task, progress };
 }
 
-export function formatDue(dueAt: string | null): string {
-  if (!dueAt) return "No due date";
-  const d = new Date(dueAt);
-  const date = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  const time = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-  return `${date}, ${time}`;
+/** Arabic names for the built-in courses (stored values stay in English). */
+export const COURSE_NAMES_AR: Record<string, string> = {
+  "CS490 Senior Capstone Design": "CS490 تصميم مشروع التخرج",
+  "CS450 Machine Learning": "CS450 تعلّم الآلة",
+  "CS410 Algorithms": "CS410 الخوارزميات",
+  "CS340 Database Systems": "CS340 أنظمة قواعد البيانات",
+  "RM210 Research Methods": "RM210 مناهج البحث",
+};
+
+export function courseName(course: string, locale: "en" | "ar"): string {
+  return locale === "ar" ? (COURSE_NAMES_AR[course] ?? course) : course;
+}
+
+/** Arabic text for the sample tasks, keyed by id and the original English title. */
+const SAMPLE_TEXT_AR: Record<string, { en: string; title: string; description: string }> = {
+  "capstone-1": {
+    en: "Overdue Capstone Phase 1",
+    title: "المرحلة الأولى المتأخرة من مشروع التخرج",
+    description: "أكمل المرحلة الأولى من مشروع التخرج، بما في ذلك التصميم والمتطلبات وخطة تنفيذ مختصرة.",
+  },
+  "quiz-4": {
+    en: "Missed Quiz 4",
+    title: "الاختبار القصير 4 الفائت",
+    description: "أعد الاختبار القصير 4 لإثبات فهمك للموضوعات المشمولة وتحديث درجتك.",
+  },
+  "homework-late": {
+    en: "Late Homework Submission",
+    title: "تسليم الواجب المتأخر",
+    description: "سلّم مسائل الواجب المتبقية، مع إجاباتك النهائية وشروحات موجزة.",
+  },
+};
+
+/** Title/description to show: sample tasks are translated until the student edits them. */
+export function taskText(task: AcademicTask, locale: "en" | "ar"): { title: string; description: string } {
+  const ar = SAMPLE_TEXT_AR[task.id];
+  if (locale === "ar" && ar && task.title === ar.en) return { title: ar.title, description: ar.description };
+  return { title: task.title, description: task.description };
 }
